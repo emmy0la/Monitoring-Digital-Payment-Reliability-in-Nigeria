@@ -1,183 +1,400 @@
 # Monitoring Digital Payment Reliability in Nigeria
 
-> A data analytics project that profiles synthetic Nigerian retail banking transactions and demonstrates how operational monitoring indicators can help identify unusual changes in digital payment reliability.
+### A Baseline Profile of Transaction Concentration, Temporal Patterns, and Scenario-Based KPI Detection Using Synthetic Transaction Data
+
+**PairBud Project:** Emmanuel Olawumi and Favour Obajuaye  
+**Last Updated:** November 2026
 
 ---
 
-## Project Overview
+## 1. Project Overview
 
-This project develops an exploratory analytics workflow using a synthetic Nigerian retail banking transaction dataset. It examines transaction behaviour, audits data quality, defines operational monitoring KPIs, and tests selected detection approaches against controlled scenarios.
+This project explores how data analytics can support the monitoring of digital payment reliability.
 
-> **Important:** The dataset is synthetic. The findings describe the dataset and its simulated scenarios. They do not measure actual Nigerian payment-system performance.
+It examines transaction outcomes, account-level activity, transaction volume patterns, and the distribution of activity across channels, merchant categories, and geographical locations.
 
----
+It also uses controlled scenario simulations to test how selected monitoring indicators respond to changes in transaction outcomes.
 
-## Project Aim
+> **⚠️ The project uses a synthetic Nigerian retail banking transaction dataset. Therefore, its findings describe the generated dataset and do not represent the actual performance of Nigerian banks, fintech companies, or payment systems.**
 
-> To demonstrate an exploratory analytics workflow for profiling transaction activity and evaluating monitoring KPIs on a synthetic Nigerian retail banking dataset, then translate the findings into practical operational monitoring recommendations.
-
----
-
-## Objectives
-
-- Profile transaction volume, value, outcomes, channels, transaction types, locations, merchant categories, time patterns, and account concentration.
-- Assess data quality and identify fields that should be excluded from downstream analysis.
-- Define operational KPIs for monitoring transaction reliability.
-- Create controlled scenarios that simulate changes in selected transaction outcomes.
-- Evaluate the implemented detection approach and document its limitations.
-- Present monitoring recommendations for further testing with appropriate operational data.
+The main objective is to demonstrate a reproducible analytical workflow and translate the findings into practical transaction monitoring recommendations.
 
 ---
 
-## Dataset and Sources
+## 2. Problem Statement
 
-The project uses the [Nigerian Banking Retail Transactions dataset](https://huggingface.co/datasets/electricsheepafrica/nigerian-banking-retail-transactions), published by `electricsheepafrica` on Hugging Face.
+Failed, pending, and reversed transactions can create operational challenges for payment providers and financial institutions.
 
-| Property | Value |
+Effective monitoring requires indicators that help operations teams identify unusual changes in transaction outcomes and activity patterns.
+
+However, publicly available transaction-level banking data is limited. This project uses a synthetic dataset to demonstrate how transaction profiling, controlled simulations, and monitoring KPIs can support this process.
+
+> **🚫 The project does not attempt to identify the causes of payment failures. The available data does not contain failure reason codes or the operational information required for causal analysis.**
+
+---
+
+## 3. Project Aim and Objectives
+
+### Aim
+
+> To profile transaction activity in a synthetic Nigerian retail banking dataset and evaluate monitoring KPIs under explicitly defined reliability scenarios.
+
+### Objectives
+
+- Examine the distribution of successful, failed, pending, and reversed transactions.
+- Measure transaction concentration across customer accounts.
+- Analyse transaction volume and temporal patterns.
+- Examine transaction composition across channels, merchant categories, and states.
+- Investigate data quality and document variables unsuitable for analysis.
+- Simulate controlled changes in transaction outcomes.
+- Evaluate monitoring methods using detection and false-alert measures.
+- Recommend practical KPIs for transaction reliability monitoring.
+
+---
+
+## 4. Dataset and Sources
+
+### Primary Dataset
+
+**Nigerian Banking Retail Transactions**
+
+Source: [Hugging Face Dataset Repository](https://huggingface.co/datasets/electricsheepafrica/nigerian-banking-retail-transactions)
+
+Direct Parquet file: [Download Dataset](https://huggingface.co/datasets/electricsheepafrica/nigerian-banking-retail-transactions/resolve/main/nigerian_retail_transactions_full.parquet)
+
+| Attribute | Description |
 |---|---|
 | Records | 5,000,000 |
 | Original columns | 16 |
 | Period | January 2023 to December 2024 |
-| Currency | Nigerian naira (NGN) |
+| Coverage | 730 calendar days |
+| Currency | Nigerian Naira (₦) |
+| Format | Parquet |
 | Data type | Synthetic transaction data |
 
-The dataset includes transaction timestamps, amounts, transaction types, channels, merchant categories, locations, devices, statuses, and other transaction attributes.
+The dataset contains transaction timestamps, amounts, transaction types, channels, merchant information, locations, transaction statuses, account identifiers, and a synthetic fraud indicator.
 
-The initial audit uses all 16 columns. Two balance fields are then excluded from downstream analysis, leaving 14 analytical columns.
+### External Context
 
-### Downloading the dataset
+[Central Bank of Nigeria, e-Payment Statistics](https://www.cbn.gov.ng/PaymentsSystem/ePaymentStatistics.html)
 
-> **[Download the Parquet dataset](https://huggingface.co/datasets/electricsheepafrica/nigerian-banking-retail-transactions/resolve/main/nigerian_retail_transactions_full.parquet)**
+CBN statistics provide separate aggregate context on digital payment activity in Nigeria.
 
-The full dataset is not included in this repository because of its size. Place the downloaded file in the location expected by the notebook, or update the notebook's data path. See `data/README.md` for setup instructions.
-
-The Central Bank of Nigeria's [ePayment Statistics](https://www.cbn.gov.ng/PaymentsSystem/ePaymentStatistics.html) may be used for separate aggregate context. CBN statistics are not merged with the synthetic transaction-level dataset and do not validate its outcome rates.
+> They are not merged with the synthetic transaction-level dataset and are not used to calculate transaction-level reliability metrics.
 
 ---
 
-## Methodology
+## 5. Tools and Technologies
 
-The project follows an exploratory workflow:
-
-1. **Data acquisition and understanding:** Load the dataset and inspect its structure, fields, and time coverage.
-2. **Data quality audit:** Check missing values, duplicate transaction identifiers, amount patterns, status behaviour, and balance-field consistency.
-3. **Data preparation:** Create analytical features and exclude fields that fail the reliability checks required for this study.
-4. **Baseline profiling:** Examine transaction outcomes, volumes, values, channels, merchant categories, locations, time patterns, and account concentration.
-5. **Scenario design:** Apply controlled changes to copies of the baseline data. Preserve the original transaction status and record simulated outcomes separately.
-6. **Detection evaluation:** Apply the implemented daily threshold approach to scenario data and assess detection and false-alert behaviour.
-7. **Interpretation and recommendations:** Explain the results, state limitations, and propose monitoring indicators for further testing.
-
-The analysis is implemented in Python using Jupyter Notebook. Power BI is planned as a presentation layer for selected findings.
+| Tool | Purpose |
+|---|---|
+| Python | Data analysis and processing |
+| Pandas | Data manipulation and profiling |
+| NumPy | Numerical operations |
+| Matplotlib | Data visualisation |
+| Jupyter Notebook | Reproducible analytical workflow |
+| GitHub | Project documentation and version control |
+| Power BI | Planned dashboard and reporting layer |
 
 ---
 
-## Key Data Quality Findings
+## 6. Analytical Workflow
 
-- The source dataset contains 5 million records and 16 original columns.
-- No duplicate transaction IDs or null values were identified in the audited fields. Blank merchant-category strings were treated separately from null values.
-- Transaction amounts are non-negative and all recorded amounts are multiples of ₦100. This should be treated as a synthetic-data characteristic.
-- The balance fields do not reliably represent transaction outcomes. Failed transactions also show balance movement, and the balance calculations follow a generator rule that is unsuitable for interpreting settlement or ledger behaviour.
-- The two balance fields are excluded from downstream analysis.
+The project follows five main phases.
 
-> **The balance fields must not be used to infer settlement, customer loss, successful posting, or reversal behaviour.**
+### Phase 1: Environment and Data Acquisition
+
+- Set up the Python environment.
+- Acquire the source Parquet dataset.
+- Inspect the dataset structure and data types.
+- Apply memory-conscious data handling.
+
+### Phase 2: Data Understanding and Quality Audit
+
+- Examine transaction records and distributions.
+- Check missing values and duplicate transaction identifiers.
+- Audit transaction amounts and balance fields.
+- Examine associations between transaction outcomes and selected variables.
+- Document analytical limitations.
+- Prepare the working dataset.
+
+### Phase 3: Baseline Transaction Analysis
+
+- Profile the four transaction outcomes.
+- Examine transaction volume and value.
+- Measure account-level transaction concentration.
+- Analyse hourly and daily transaction patterns.
+- Examine channel, merchant-category, and geographical composition.
+
+### Phase 4: Scenario Simulation and Detection
+
+- Define controlled transaction reliability scenarios.
+- Apply scenario transformations to copies of the baseline data.
+- Preserve the original transaction records.
+- Develop monitoring methods.
+- Evaluate detection behaviour and false alerts.
+
+### Phase 5: Recommendations and Reporting
+
+- Define operational monitoring KPIs.
+- Interpret baseline and scenario findings.
+- Document limitations and recommendations.
+- Prepare the final report and visualisations.
+- Develop a Power BI dashboard as a presentation layer.
 
 ---
 
-## Baseline Findings
+## 7. Data Quality Findings
 
-The dataset contains four transaction statuses:
+The initial data audit identified the following characteristics.
 
-| Status | Records | Share |
-|---|---:|---:|
-| Successful | 4,599,963 | 92.00% |
-| Failed | 349,765 | 6.995% |
-| Pending | 40,383 | 0.808% |
-| Reversed | 9,889 | 0.198% |
-
-The analysis retains all four outcomes and reports them separately.
-
-Other baseline observations:
-
-- Mobile, POS, and ATM account for approximately 85% of records in this synthetic dataset.
-- USSD and agent transactions account for approximately 2.01% of records in this dataset.
-- Transaction volume is highest in the evening, peaking around 18:00 to 20:00.
-- Transaction amounts are strongly right-skewed. The median is more representative of a typical transaction than the mean alone.
-- Transaction activity is concentrated among a subset of accounts.
-- Failure rates vary only slightly across the tested channels, transaction types, locations, amount bands, and time groupings. The observed effect sizes are negligible in the tested comparisons.
-
-> **These findings describe this dataset. They are not estimates of the Nigerian banking population and do not show that any channel, location, or transaction type causes transaction failures.**
-
----
-
-## Scenario-Based Testing
-
-The project uses controlled scenarios to test whether monitoring methods can identify selected changes in transaction outcomes.
-
-| Scenario | Simulated change | Evaluation focus |
+| Audit Area | Finding | Analytical Decision |
 |---|---|---|
-| **A** | Increased mobile-channel failure probability during a defined evening event window | Failure and non-success monitoring |
-| **B** | Increased pending and reversed outcomes during a defined Sunday event window | Pending, reversed, and non-success monitoring |
-| **C** | Increased failure probability for merchant category code 4814 during a defined event window | Failure and non-success monitoring |
+| Dataset structure | 5 million records and 16 original columns | Retain the dataset |
+| Missing values | No missing values in audited fields | Retain |
+| Duplicate IDs | No duplicate transaction IDs | Retain |
+| Date coverage | 730 consecutive calendar days | Retain |
+| Transaction amounts | All amounts are positive and multiples of ₦100 | Document as a synthetic data characteristic |
+| Balance fields | Balance movements do not reliably reflect transaction outcomes | Exclude both balance fields |
+| Fraud indicator | Approximately 0.8% prevalence with negligible association with transaction status | Descriptive use only |
 
-Scenario transformations are applied to separate copies of the baseline data. The original status is retained, and the simulated status is stored separately.
+After excluding the two balance fields, the analytical dataset contains 5 million records and 14 columns.
 
-> **Scenario results are simulation outputs, not observed payment-system incidents.**
+### Important Data Limitations
 
-### Detection method status
+**Balance fields**
 
-The daily threshold method has been implemented and evaluated, including a comparison of experimental threshold multipliers.
+The `balance_before_ngn` and `balance_after_ngn` fields do not reliably represent transaction outcomes. They are excluded from subsequent analysis.
 
-The rolling seven-day method and hourly CUSUM method remain planned extensions. They should not be treated as completed or evaluated methods until implementation and results have been validated.
+> The project does not use them to infer successful posting, settlement, financial loss, or ledger behaviour.
 
-> **Threshold settings in this project are experimental. They are not production alert thresholds.**
+**Fraud indicator**
 
----
+The `fraud_flag` field is a synthetic indicator. Its observed relationship with transaction outcomes is negligible.
 
-## Monitoring KPIs
+> The project does not treat flagged records as confirmed fraud or use the field for fraud prediction.
 
-The proposed monitoring framework includes:
+**Transaction failure patterns**
 
-- **Transaction volume:** Number of transactions within a defined time interval.
-- **Failure count:** Number of transactions with a failed status.
-- **Failure rate:** Failed transactions divided by total transactions, multiplied by 100.
-- **Failed-value exposure:** Sum of the amounts associated with failed transactions.
-- **Pending share:** Pending transactions divided by total transactions, multiplied by 100.
-- **Reversal share:** Reversed transactions divided by total transactions, multiplied by 100.
-- **Peak-hour volume:** Transaction count within selected high-activity hours.
-- **Account concentration:** Share of transaction activity attributable to the most active accounts.
-
-> **Failed-value exposure is a monitoring measure. It does not represent confirmed financial loss, unsettled funds, or customer compensation.**
+The failure rate remains nearly constant across the tested dimensions. The available data does not support meaningful failure-cause analysis.
 
 ---
 
-## Limitations
+## 8. Baseline Findings
 
-- The transaction dataset is synthetic and cannot establish actual Nigerian payment performance.
-- The generated outcome patterns show little variation across the tested dimensions. The analysis does not support causal explanations for transaction failures.
-- The fraud indicator does not provide useful separation across the tested dimensions. It is not used as a fraud-prediction target, and flagged records are not treated as confirmed fraud.
-- The balance fields are excluded because their behaviour is inconsistent with reliable transaction-outcome interpretation.
-- Scenario tests are controlled simulations. Their results do not represent real incidents.
-- The daily threshold method is experimental. Further validation is required before operational use.
-- Rolling seven-day and hourly CUSUM comparisons are not yet complete.
-- The project does not analyse settlement delays or identify root causes of failed transactions because the dataset does not provide the required evidence.
+> The following figures describe the synthetic dataset.
+
+### 8.1 Transaction Status Distribution
+
+| Status | Transactions | Share |
+|---|---:|---:|
+| Success | 4,599,963 | 92.00% |
+| Failed | 349,765 | 7.00% |
+| Pending | 40,383 | 0.81% |
+| Reversed | 9,889 | 0.20% |
+| **Total** | **5,000,000** | **100%** |
+
+### 8.2 Account-Level Transaction Concentration
+
+Transaction activity is concentrated among a relatively small proportion of accounts.
+
+| Account Group | Share of Total Transactions |
+|---|---:|
+| Top 1% | 33.9% |
+| Top 5% | 50.6% |
+| Top 10% | 59.6% |
+| Top 20% | 70.0% |
+| Top 50% | 86.4% |
+
+> This describes transaction concentration within the generated dataset. It does not establish actual customer activity patterns in Nigeria.
+
+### 8.3 Channel Composition
+
+Mobile, POS, and ATM account for approximately 85% of the transaction records.
+
+This indicates that transaction volume is concentrated in these three channels within the dataset.
+
+> Higher transaction volume does not automatically indicate higher failure risk.
+
+### 8.4 Temporal Patterns
+
+The baseline analysis identifies:
+
+- Higher transaction activity around 18:00 to 20:00.
+- Lower activity between 00:00 and 05:00.
+- A narrow daily transaction-volume range across the 730-day period.
+
+> These patterns describe the generated data and should not be interpreted as actual Nigerian payment trends.
+
+### 8.5 Statistical Association
+
+The statistical audits show negligible observed associations between transaction status and several tested dimensions, including channel, transaction type, and the synthetic fraud indicator.
+
+For example:
+
+- Channel and status: Cramér's V = 0.000738.
+- Transaction type and status: Cramér's V = 0.000628.
+- Fraud flag and status: Cramér's V = 0.000064.
+
+> The results do not provide evidence of meaningful associations in the tested data. They do not establish that these variables are independent in real payment systems.
 
 ---
 
-## Repository Structure
+## 9. Scenario-Based Monitoring Tests
+
+The project uses three controlled scenarios to examine how monitoring indicators respond to selected changes in transaction outcomes.
+
+All scenario transformations are applied to copies of the baseline data. The original dataset remains unchanged.
+
+> **🧪 All simulated results must be labelled: Scenario test output, not observed data.**
+
+### Scenario A: Peak-Hour Mobile Failure Increase
+
+| Parameter | Definition |
+|---|---|
+| Channel | Mobile |
+| Event period | 17 to 30 June 2024 |
+| Time window | 18:00 to 19:59 |
+| Baseline failure probability | 7% |
+| Simulated failure probability | 12% |
+| Change | Increase in failed transaction probability |
+
+This scenario tests whether monitoring can identify a sustained increase in failed mobile transactions during a defined peak-hour window.
+
+### Scenario B: Pending and Reversal Increase
+
+| Parameter | Definition |
+|---|---|
+| Channel | All channels |
+| Event date | 15 September 2024 |
+| Time window | 12:00 to 17:59 |
+| Pending adjustment | Increase by 3 percentage points |
+| Reversal adjustment | Increase by 2 percentage points |
+| Failed transactions | Unchanged |
+
+This scenario tests whether monitoring can identify changes in pending and reversed transaction shares when the failure rate remains unchanged.
+
+It demonstrates why monitoring only failed transactions may overlook other important changes in transaction outcomes.
+
+### Scenario C: Telecom Merchant Category Failure Increase
+
+| Parameter | Definition |
+|---|---|
+| Merchant Category Code | MCC 4814 |
+| Event date | 28 June 2023 |
+| Time window | 06:00 to 17:59 |
+| Baseline failure rate | Approximately 7.24% |
+| Simulated target failure rate | 15% |
+| Change | Increase in failed transactions within the selected merchant category |
+
+This scenario tests whether monitoring can identify a failure-rate increase within a specific merchant category.
+
+> The simulation uses the same target population before and after injection. The resulting comparison is a controlled scenario test, not an independent-sample experiment.
+
+---
+
+## 10. Detection Methodology
+
+The project considers three candidate monitoring approaches.
+
+| Method | Description | Current Status |
+|---|---|---|
+| Daily threshold monitoring | Compares daily KPI rates against a baseline-derived upper control limit | ✅ Implemented in the notebook |
+| Rolling seven-day baseline | Compares current activity with a rolling historical baseline | 🔄 Planned extension |
+| Hourly CUSUM | Sequentially monitors hourly changes against a reference level | 🔄 Planned extension |
+
+### Daily Threshold Monitoring
+
+The implemented daily threshold method uses a binomial upper control limit:
+
+$$
+UCL_d = p_0 + k\sqrt{\frac{p_0(1-p_0)}{n_d}}
+$$
+
+Where:
+
+- $p_0$ is the pre-event baseline rate.
+- $k$ is the selected control-limit multiplier.
+- $n_d$ is the eligible transaction count for the monitoring day.
+
+The method compares experimental values of $k=3$ and $k=4$.
+
+Calibration uses pre-event observations. Event and post-event periods are excluded from baseline calibration.
+
+### Evaluation Measures
+
+The detection evaluation focuses on:
+
+- Whether the monitoring method detects the simulated event.
+- Detection lag in calendar days.
+- Number of event days flagged.
+- Number of event days evaluated.
+- False-alert days.
+- False-alert rate across eligible post-event control days.
+
+> The project will report only metrics that have been calculated and validated in the notebook.
+
+The rolling seven-day and hourly CUSUM methods remain planned extensions. They should not be treated as completed or compared as evaluated methods until their implementations and results are available.
+
+---
+
+## 11. Monitoring KPI Catalogue
+
+The project considers the following indicators for operational monitoring.
+
+| KPI | Definition | Monitoring Purpose |
+|---|---|---|
+| Transaction Volume | Number of eligible transactions | Track activity levels |
+| Success Rate | Successful transactions divided by eligible transactions | Monitor successful outcomes |
+| Failure Rate | Failed transactions divided by eligible transactions | Identify increases in failed transactions |
+| Pending Share | Pending transactions divided by eligible transactions | Monitor unresolved transaction outcomes |
+| Reversal Share | Reversed transactions divided by eligible transactions | Track changes in recorded reversals |
+| Account Concentration | Share of transactions generated by ranked account groups | Monitor activity concentration |
+| Failed Transaction Value | Sum of failed transaction amounts | Support prioritisation, not financial-loss measurement |
+
+> The KPIs should be interpreted with their denominators, monitoring windows, and relevant transaction segments clearly stated.
+
+---
+
+## 12. Limitations
+
+The project has several limitations.
+
+1. **Synthetic data:** The dataset does not represent actual Nigerian payment performance.
+2. **Generated patterns:** Transaction distributions and temporal patterns may reflect the dataset's generation process.
+3. **No failure reasons:** The dataset cannot support failure-cause analysis.
+4. **No settlement timestamps:** Settlement delays cannot be evaluated.
+5. **Defective balance fields:** Balance movements cannot support reliable ledger or settlement conclusions.
+6. **Synthetic fraud flag:** The fraud indicator is not suitable for confirmed fraud classification or predictive modelling.
+7. **Scenario simulations:** Injected changes test monitoring behaviour. They are not observations of real payment incidents.
+8. **External aggregate data:** CBN statistics are kept separate and cannot validate transaction-level outcomes in the synthetic dataset.
+
+> The project therefore focuses on descriptive analysis, monitoring design, and controlled method evaluation rather than causal inference or claims about actual payment reliability.
+
+---
+
+## 13. Repository Structure
+
+The proposed repository structure is:
 
 ```text
 payment-reliability-project/
+│
 ├── README.md
 ├── LICENSE
 ├── .gitignore
 ├── requirements.txt
+│
 ├── notebooks/
 │   └── Monitoring_Digital_Payment_Reliability.ipynb
+│
 ├── data/
 │   └── README.md
+│
 ├── figures/
 │   ├── baseline/
 │   └── scenarios/
+│
 ├── docs/
 │   ├── 01_project_methodology.md
 │   ├── 02_data_dictionary.md
@@ -185,59 +402,158 @@ payment-reliability-project/
 │   ├── 04_research_questions.md
 │   ├── 05_limitations.md
 │   └── 06_monitoring_kpis.md
+│
 ├── reports/
 │   └── project_summary.md
+│
 └── powerbi/
     └── README.md
 ```
 
-## Tools and Technologies
+The repository will contain the notebook, documentation, and selected analytical outputs.
 
-- Python
-- Jupyter Notebook
-- pandas
-- NumPy
-- Matplotlib
-- SciPy
-- Parquet
-- Power BI (planned)
+> The original 5-million-row Parquet dataset will not be uploaded to GitHub. Users should obtain it directly from the Hugging Face source.
 
-## Running the Notebook
+## 14. Reproducing the Analysis
 
-1. Clone or download this repository.
-2. Download the Parquet dataset using the link above.
-3. Place the file in the location expected by the notebook, or update the notebook's dataset path.
-4. Install the dependencies listed in `requirements.txt`.
-5. Open the notebook in Jupyter and run the cells in order.
+Requirements
 
-```bash
-git clone <repository-url>
+Python 3.10 or later.
+
+Jupyter Notebook.
+
+Pandas.
+
+NumPy.
+
+Matplotlib.
+
+A compatible Parquet engine, such as PyArrow.
+
+## Installation
+
+Clone the repository:
+
+git clone https://github.com/your-username/payment-reliability-project.git
 cd payment-reliability-project
+
+Install the dependencies:
+
 pip install -r requirements.txt
+
+Open Jupyter Notebook:
+
 jupyter notebook
-```
 
-Replace `<repository-url>` with your GitHub repository URL.
+Open the notebook in the notebooks/ directory.
 
-## Project Status
+The notebook checks for the dataset in the configured project directory and downloads the Parquet file from Hugging Face if it is not already available.
 
-**Current stage: Exploratory analysis and documentation.**
+Update the project directory in the notebook to match your local setup.
 
-- Data profiling and quality audit: implemented.
-- Feature engineering and baseline analysis: substantially implemented.
-- Scenario design: implemented.
-- Daily threshold evaluation: implemented, with experimental sensitivity checks.
-- Rolling seven-day detection: pending.
-- Hourly CUSUM detection: pending.
-- Final clean execution and output verification: pending.
-- Power BI report: planned.
+> Because the dataset contains five million records, sufficient system memory is required.
 
-The repository will be updated as the remaining evaluation work and Power BI report are completed.
+## 15. Current Project Status
 
-## Future Work
+Component
 
-- Complete and validate the rolling seven-day and hourly CUSUM methods.
-- Compare detection performance across the three scenarios using consistent evaluation criteria.
-- Re-run the full notebook from a clean environment and verify all reported outputs.
-- Build the planned Power BI report with pages for Executive Overview, Transaction Behaviour, Reliability Monitoring, and Scenario Testing.
-- Add final charts, a project summary, and supporting documentation.
+Status
+
+Data acquisition and initial profiling
+
+Developed
+
+Data quality audit
+
+Developed
+
+Analytical dataset preparation
+
+Developed
+
+Baseline transaction analysis
+
+Developed
+
+Scenario A simulation
+
+Developed
+
+Scenario B simulation
+
+Developed
+
+Scenario C simulation
+
+Developed
+
+Daily threshold method
+
+Implemented in notebook
+
+Rolling seven-day method
+
+Planned
+
+Hourly CUSUM method
+
+Planned
+
+Final detection evaluation
+
+Requires clean-kernel execution and validation
+
+Final report and documentation
+
+In progress
+
+Power BI dashboard
+
+Planned
+
+The notebook has undergone a methodological review. A complete restart-and-run execution against the source Parquet file is still required before final numerical outputs are treated as verified.
+
+## 16. Future Development
+
+The next stages of the project include:
+
+- Complete a clean-kernel execution of the notebook.
+- Validate all scenario outputs and detection metrics.
+- Implement and evaluate the rolling seven-day method.
+- Implement and evaluate hourly CUSUM.
+- Compare the methods using validated detection results.
+- Finalise the monitoring KPI catalogue and recommendations.
+- Publish the supporting documentation and selected figures.
+- Develop a Power BI dashboard for reporting and exploration.
+
+The planned Power BI dashboard will organise the findings into four pages:
+
+1. Executive Overview.
+2. Transaction Behaviour.
+3. Reliability Monitoring.
+4. Scenario Testing.
+
+Python and Jupyter Notebook will remain the primary analytical workflow. Power BI will serve as the presentation and reporting layer.
+
+## 17. Contributors
+
+Emmanuel Olawumi
+Project design, data preparation, exploratory analysis, statistical interpretation, and documentation.
+
+Favour Obajuaye
+Project collaboration, analytical development, and scenario-based monitoring work.
+
+## 18. Acknowledgements and References
+
+- [Nigerian Banking Retail Transactions, Hugging Face](https://huggingface.co/datasets/electricsheepafrica/nigerian-banking-retail-transactions)
+- [Central Bank of Nigeria, e-Payment Statistics](https://www.cbn.gov.ng/PaymentsSystem/ePaymentStatistics.html)
+
+## Disclaimer
+
+This project is an educational and analytical demonstration using synthetic transaction data.
+
+The results do not represent actual Nigerian banking transactions, customer behaviour, payment-system performance, or financial institution reliability.
+
+All simulated results are controlled test outputs and must not be interpreted as observed payment incidents.
+
+The project does not use confidential employer, customer, or production transaction data.
