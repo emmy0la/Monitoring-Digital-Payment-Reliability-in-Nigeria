@@ -15,7 +15,7 @@ It examines transaction outcomes, account-level activity, transaction volume pat
 
 It also uses controlled scenario simulations to test how selected monitoring indicators respond to changes in transaction outcomes.
 
-> ** The project uses a synthetic Nigerian retail banking transaction dataset. Therefore, its findings describe the generated dataset and do not represent the actual performance of Nigerian banks, fintech companies, or payment systems.**
+> **The project uses a synthetic Nigerian retail banking transaction dataset. Therefore, its findings describe the generated dataset and do not represent the actual performance of Nigerian banks, fintech companies, or payment systems.**
 
 The main objective is to demonstrate a reproducible analytical workflow and translate the findings into practical transaction monitoring recommendations.
 
@@ -29,7 +29,7 @@ Effective monitoring requires indicators that help operations teams identify unu
 
 However, publicly available transaction-level banking data is limited. This project uses a synthetic dataset to demonstrate how transaction profiling, controlled simulations, and monitoring KPIs can support this process.
 
-> ** The project does not attempt to identify the causes of payment failures. The available data does not contain failure reason codes or the operational information required for causal analysis.**
+> **The project does not attempt to identify the causes of payment failures. The available data does not contain failure reason codes or the operational information required for causal analysis.**
 
 ---
 
