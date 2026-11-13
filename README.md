@@ -189,3 +189,57 @@ payment-reliability-project/
 │   └── project_summary.md
 └── powerbi/
     └── README.md
+```
+
+Folders and supporting documents may be added as the project develops.
+
+## Tools and Technologies
+
+- Python
+- Jupyter Notebook
+- pandas
+- NumPy
+- Matplotlib
+- SciPy
+- Parquet
+- Power BI (planned)
+
+## Running the Notebook
+
+1. Clone or download this repository.
+2. Download the Parquet dataset using the link above.
+3. Place the file in the location expected by the notebook, or update the notebook's dataset path.
+4. Install the dependencies listed in `requirements.txt`.
+5. Open the notebook in Jupyter and run the cells in order.
+
+```bash
+git clone <repository-url>
+cd payment-reliability-project
+pip install -r requirements.txt
+jupyter notebook
+```
+
+Replace `<repository-url>` with your GitHub repository URL.
+
+## Project Status
+
+**Current stage: Exploratory analysis and documentation.**
+
+- Data profiling and quality audit: implemented.
+- Feature engineering and baseline analysis: substantially implemented.
+- Scenario design: implemented.
+- Daily threshold evaluation: implemented, with experimental sensitivity checks.
+- Rolling seven-day detection: pending.
+- Hourly CUSUM detection: pending.
+- Final clean execution and output verification: pending.
+- Power BI report: planned.
+
+The repository will be updated as the remaining evaluation work and Power BI report are completed.
+
+## Future Work
+
+- Complete and validate the rolling seven-day and hourly CUSUM methods.
+- Compare detection performance across the three scenarios using consistent evaluation criteria.
+- Re-run the full notebook from a clean environment and verify all reported outputs.
+- Build the planned Power BI report with pages for Executive Overview, Transaction Behaviour, Reliability Monitoring, and Scenario Testing.
+- Add final charts, a project summary, and supporting documentation.
