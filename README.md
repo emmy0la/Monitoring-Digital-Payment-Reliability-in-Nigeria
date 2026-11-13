@@ -1,6 +1,4 @@
-from pathlib import Path
-
-content = """# Monitoring Digital Payment Reliability in Nigeria
+# Monitoring Digital Payment Reliability in Nigeria
 
 A data analytics project that profiles synthetic Nigerian retail banking transactions and demonstrates how operational monitoring indicators can help identify unusual changes in digital payment reliability.
 
