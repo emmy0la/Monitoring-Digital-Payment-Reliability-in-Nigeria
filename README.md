@@ -191,8 +191,6 @@ payment-reliability-project/
     └── README.md
 ```
 
-Folders and supporting documents may be added as the project develops.
-
 ## Tools and Technologies
 
 - Python
