@@ -246,7 +246,7 @@ The project uses three controlled scenarios to examine how monitoring indicators
 
 All scenario transformations are applied to copies of the baseline data. The original dataset remains unchanged.
 
-> **🧪 All simulated results must be labelled: Scenario test output, not observed data.**
+> **All simulated results must be labelled: Scenario test output, not observed data.**
 
 ### Scenario A: Peak-Hour Mobile Failure Increase
 
