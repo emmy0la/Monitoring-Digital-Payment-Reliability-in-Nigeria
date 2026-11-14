@@ -68,7 +68,7 @@ Direct Parquet file: [Download Dataset](https://huggingface.co/datasets/electric
 | Original columns | 16 |
 | Period | January 2023 to December 2024 |
 | Coverage | 730 calendar days |
-| Currency | Nigerian Naira (₦) |
+| Currency | Nigerian Naira (NGN) |
 | Format | Parquet |
 | Data type | Synthetic transaction data |
 
@@ -154,7 +154,7 @@ The initial data audit identified the following characteristics.
 | Missing values | No missing values in audited fields | Retain |
 | Duplicate IDs | No duplicate transaction IDs | Retain |
 | Date coverage | 730 consecutive calendar days | Retain |
-| Transaction amounts | All amounts are positive and multiples of ₦100 | Document as a synthetic data characteristic |
+| Transaction amounts | All amounts are positive and multiples of NGN 100 | Document as a synthetic data characteristic |
 | Balance fields | Balance movements do not reliably reflect transaction outcomes | Exclude both balance fields |
 | Fraud indicator | Approximately 0.8% prevalence with negligible association with transaction status | Descriptive use only |
 
@@ -232,9 +232,9 @@ The statistical audits show negligible observed associations between transaction
 
 For example:
 
-- Channel and status: Cramér's V = 0.000738.
-- Transaction type and status: Cramér's V = 0.000628.
-- Fraud flag and status: Cramér's V = 0.000064.
+- Channel and status: Cramer's V = 0.000738.
+- Transaction type and status: Cramer's V = 0.000628.
+- Fraud flag and status: Cramer's V = 0.000064.
 
 > The results do not provide evidence of meaningful associations in the tested data. They do not establish that these variables are independent in real payment systems.
 
@@ -299,9 +299,9 @@ The project considers three candidate monitoring approaches.
 
 | Method | Description | Current Status |
 |---|---|---|
-| Daily threshold monitoring | Compares daily KPI rates against a baseline-derived upper control limit | ✅ Implemented in the notebook |
-| Rolling seven-day baseline | Compares current activity with a rolling historical baseline | 🔄 Planned extension |
-| Hourly CUSUM | Sequentially monitors hourly changes against a reference level | 🔄 Planned extension |
+| Daily threshold monitoring | Compares daily KPI rates against a baseline-derived upper control limit | Implemented in the notebook |
+| Rolling seven-day baseline | Compares current activity with a rolling historical baseline | Planned extension |
+| Hourly CUSUM | Sequentially monitors hourly changes against a reference level | Planned extension |
 
 ### Daily Threshold Monitoring
 
@@ -409,41 +409,43 @@ payment-reliability-project/
 └── powerbi/
     └── README.md
 ```
-
 The repository will contain the notebook, documentation, and selected analytical outputs.
 
 > The original 5-million-row Parquet dataset will not be uploaded to GitHub. Users should obtain it directly from the Hugging Face source.
 
+---
+
 ## 14. Reproducing the Analysis
 
-Requirements
+### Requirements
 
-Python 3.10 or later.
+- Python 3.10 or later.
+- Jupyter Notebook.
+- Pandas.
+- NumPy.
+- Matplotlib.
+- A compatible Parquet engine, such as PyArrow.
 
-Jupyter Notebook.
-
-Pandas.
-
-NumPy.
-
-Matplotlib.
-
-A compatible Parquet engine, such as PyArrow.
-
-## Installation
+### Installation
 
 Clone the repository:
 
-git clone https://github.com/your-username/payment-reliability-project.git
+```bash
+git clone https://github.com/emmy0la/payment-reliability-project.git
 cd payment-reliability-project
+```
 
 Install the dependencies:
 
+```bash
 pip install -r requirements.txt
+```
 
 Open Jupyter Notebook:
 
+```bash
 jupyter notebook
+```
 
 Open the notebook in the notebooks/ directory.
 
@@ -455,63 +457,25 @@ Update the project directory in the notebook to match your local setup.
 
 ## 15. Current Project Status
 
-Component
-
-Status
-
-Data acquisition and initial profiling
-
-Developed
-
-Data quality audit
-
-Developed
-
-Analytical dataset preparation
-
-Developed
-
-Baseline transaction analysis
-
-Developed
-
-Scenario A simulation
-
-Developed
-
-Scenario B simulation
-
-Developed
-
-Scenario C simulation
-
-Developed
-
-Daily threshold method
-
-Implemented in notebook
-
-Rolling seven-day method
-
-Planned
-
-Hourly CUSUM method
-
-Planned
-
-Final detection evaluation
-
-Requires clean-kernel execution and validation
-
-Final report and documentation
-
-In progress
-
-Power BI dashboard
-
-Planned
+| Component | Status |
+|---|---|
+| Data acquisition and initial profiling | Developed |
+| Data quality audit | Developed |
+| Analytical dataset preparation | Developed |
+| Baseline transaction analysis | Developed |
+| Scenario A simulation | Developed |
+| Scenario B simulation | Developed |
+| Scenario C simulation | Developed |
+| Daily threshold method | Implemented in notebook |
+| Rolling seven-day method | Planned |
+| Hourly CUSUM method | Planned |
+| Final detection evaluation | Requires clean-kernel execution and validation |
+| Final report and documentation | In progress |
+| Power BI dashboard | Planned |
 
 The notebook has undergone a methodological review. A complete restart-and-run execution against the source Parquet file is still required before final numerical outputs are treated as verified.
+
+---
 
 ## 16. Future Development
 
@@ -528,25 +492,30 @@ The next stages of the project include:
 
 The planned Power BI dashboard will organise the findings into four pages:
 
-1. Executive Overview.
-2. Transaction Behaviour.
-3. Reliability Monitoring.
-4. Scenario Testing.
+1. Executive Overview
+2. Transaction Behaviour
+3. Reliability Monitoring
+4. Scenario Testing
 
 Python and Jupyter Notebook will remain the primary analytical workflow. Power BI will serve as the presentation and reporting layer.
 
+---
+
 ## 17. Contributors
 
-Emmanuel Olawumi
-Project design, data preparation, exploratory analysis, statistical interpretation, and documentation.
+| Contributor | Role |
+|---|---|
+| Emmanuel Olawumi | Project design, data preparation, exploratory analysis, statistical interpretation, and documentation. |
+| Favour Obajuaye | Project collaboration, analytical development, and scenario-based monitoring work. |
 
-Favour Obajuaye
-Project collaboration, analytical development, and scenario-based monitoring work.
+---
 
 ## 18. Acknowledgements and References
 
 - [Nigerian Banking Retail Transactions, Hugging Face](https://huggingface.co/datasets/electricsheepafrica/nigerian-banking-retail-transactions)
 - [Central Bank of Nigeria, e-Payment Statistics](https://www.cbn.gov.ng/PaymentsSystem/ePaymentStatistics.html)
+
+---
 
 ## Disclaimer
 
